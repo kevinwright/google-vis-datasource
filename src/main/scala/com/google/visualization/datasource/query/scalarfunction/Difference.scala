@@ -15,31 +15,15 @@ package com.google.visualization.datasource
 package query
 package scalarfunction
 
-import java.util.List
-
-import collection.JavaConverters._
-
-//object Difference extends Difference
-//
-///**
-// * The binary scalar function difference().
-// * Returns the difference between two number values.
-// *
-// * @author Liron L.
-// */
-//class Difference extends TwoArgNumericScalarFunction {
-//  val functionName = "difference"
-//  val operatorName = "-"
-//
-//  def invoke(a: Double, b: Double) = a - b
-//
-//}
-
+/**
+* The binary scalar function difference().
+* Returns the difference between two number values.
+*
+* @author Liron L.
+*/
 object Difference extends TwoArgNumericScalarFunction {
   val functionName = "difference"
   val operatorName = "-"
-
   def invoke(a: Double, b: Double) = a - b
-
 }
 
