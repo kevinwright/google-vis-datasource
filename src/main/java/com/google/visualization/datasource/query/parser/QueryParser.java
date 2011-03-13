@@ -31,17 +31,28 @@ import com.google.visualization.datasource.query.SortOrder;
 import com.google.visualization.datasource.query.SimpleColumn;
 import com.google.visualization.datasource.query.scalarfunction.Constant;
 import com.google.visualization.datasource.query.scalarfunction.CurrentDateTime;
+import com.google.visualization.datasource.query.scalarfunction.CurrentDateTime$;
 import com.google.visualization.datasource.query.scalarfunction.DateDiff;
+import com.google.visualization.datasource.query.scalarfunction.DateDiff$;
 import com.google.visualization.datasource.query.scalarfunction.Difference;
+import com.google.visualization.datasource.query.scalarfunction.Difference$;
 import com.google.visualization.datasource.query.scalarfunction.Lower;
+import com.google.visualization.datasource.query.scalarfunction.Lower$;
 import com.google.visualization.datasource.query.scalarfunction.Modulo;
+import com.google.visualization.datasource.query.scalarfunction.Modulo$;
 import com.google.visualization.datasource.query.scalarfunction.Product;
+import com.google.visualization.datasource.query.scalarfunction.Product$;
 import com.google.visualization.datasource.query.scalarfunction.Quotient;
+import com.google.visualization.datasource.query.scalarfunction.Quotient$;
 import com.google.visualization.datasource.query.scalarfunction.ScalarFunction;
 import com.google.visualization.datasource.query.scalarfunction.Sum;
+import com.google.visualization.datasource.query.scalarfunction.Sum$;
 import com.google.visualization.datasource.query.scalarfunction.ToDate;
+import com.google.visualization.datasource.query.scalarfunction.ToDate$;
 import com.google.visualization.datasource.query.scalarfunction.TimeComponentExtractor;
+import com.google.visualization.datasource.query.scalarfunction.TimeComponentExtractorComponent;
 import com.google.visualization.datasource.query.scalarfunction.Upper;
+import com.google.visualization.datasource.query.scalarfunction.Upper$;
 
 import java.io.BufferedReader;
 import java.io.Reader;
@@ -1132,7 +1143,7 @@ public class QueryParser implements QueryParserConstants {
         column1 = possibleFirstOrderArithmeticExpression();
     column =
       new ScalarFunctionColumn(GenericsHelper.makeAbstractColumnList(
-          new AbstractColumn[] {column, column1}), Sum.getInstance() );
+          new AbstractColumn[] {column, column1}), Sum$.MODULE$ );
         break;
       case OP_MINUS:
         jj_consume_token(OP_MINUS);
@@ -1140,7 +1151,7 @@ public class QueryParser implements QueryParserConstants {
     column =
       new ScalarFunctionColumn(GenericsHelper.makeAbstractColumnList(
           new AbstractColumn[]{column, column1}),
-          Difference.getInstance());
+          Difference$.MODULE$);
         break;
       default:
         jj_la1[36] = jj_gen;
@@ -1175,7 +1186,7 @@ public class QueryParser implements QueryParserConstants {
         column1 = atomicAbstractColumnDescriptor();
     column =
       new ScalarFunctionColumn(GenericsHelper.makeAbstractColumnList(
-          new AbstractColumn[] {column, column1}), Product.getInstance() );
+          new AbstractColumn[] {column, column1}), Product$.MODULE$ );
         break;
       case OP_SLASH:
         jj_consume_token(OP_SLASH);
@@ -1183,7 +1194,7 @@ public class QueryParser implements QueryParserConstants {
     column =
       new ScalarFunctionColumn(GenericsHelper.makeAbstractColumnList(
           new AbstractColumn[]{column, column1}),
-          Quotient.getInstance());
+          Quotient$.MODULE$);
         break;
       case OP_MODULO:
         jj_consume_token(OP_MODULO);
@@ -1191,7 +1202,7 @@ public class QueryParser implements QueryParserConstants {
     column =
       new ScalarFunctionColumn(GenericsHelper.makeAbstractColumnList(
           new AbstractColumn[]{column, column1}),
-          Modulo.getInstance());
+          Modulo$.MODULE$);
         break;
       default:
         jj_la1[38] = jj_gen;
@@ -1243,67 +1254,67 @@ public class QueryParser implements QueryParserConstants {
     case KW_YEAR:
       jj_consume_token(KW_YEAR);
                  result = TimeComponentExtractor.getInstance(
-          TimeComponentExtractor.TimeComponent.YEAR);
+          TimeComponentExtractorComponent.YEAR);
       break;
     case KW_MONTH:
       jj_consume_token(KW_MONTH);
                   result = TimeComponentExtractor.getInstance(
-          TimeComponentExtractor.TimeComponent.MONTH);
+          TimeComponentExtractorComponent.MONTH);
       break;
     case KW_DAY:
       jj_consume_token(KW_DAY);
                 result = TimeComponentExtractor.getInstance(
-          TimeComponentExtractor.TimeComponent.DAY);
+          TimeComponentExtractorComponent.DAY);
       break;
     case KW_HOUR:
       jj_consume_token(KW_HOUR);
                  result = TimeComponentExtractor.getInstance(
-          TimeComponentExtractor.TimeComponent.HOUR);
+          TimeComponentExtractorComponent.HOUR);
       break;
     case KW_MINUTE:
       jj_consume_token(KW_MINUTE);
                    result = TimeComponentExtractor.getInstance(
-          TimeComponentExtractor.TimeComponent.MINUTE);
+          TimeComponentExtractorComponent.MINUTE);
       break;
     case KW_SECOND:
       jj_consume_token(KW_SECOND);
                    result = TimeComponentExtractor.getInstance(
-          TimeComponentExtractor.TimeComponent.SECOND);
+          TimeComponentExtractorComponent.SECOND);
       break;
     case KW_MILLISECOND:
       jj_consume_token(KW_MILLISECOND);
                         result = TimeComponentExtractor.getInstance(
-          TimeComponentExtractor.TimeComponent.MILLISECOND);
+          TimeComponentExtractorComponent.MILLISECOND);
       break;
     case KW_NOW:
       jj_consume_token(KW_NOW);
-                result = CurrentDateTime.getInstance();
+                result = CurrentDateTime$.MODULE$;
       break;
     case KW_DATEDIFF:
       jj_consume_token(KW_DATEDIFF);
-                     result = DateDiff.getInstance();
+                     result = DateDiff$.MODULE$;
       break;
     case KW_LOWER:
       jj_consume_token(KW_LOWER);
-                  result = Lower.getInstance();
+                  result = Lower$.MODULE$;
       break;
     case KW_UPPER:
       jj_consume_token(KW_UPPER);
-                  result = Upper.getInstance();
+                  result = Upper$.MODULE$;
       break;
     case KW_QUARTER:
       jj_consume_token(KW_QUARTER);
                     result = TimeComponentExtractor.getInstance(
-          TimeComponentExtractor.TimeComponent.QUARTER);
+          TimeComponentExtractorComponent.QUARTER);
       break;
     case KW_DAYOFWEEK:
       jj_consume_token(KW_DAYOFWEEK);
                       result = TimeComponentExtractor.getInstance(
-          TimeComponentExtractor.TimeComponent.DAY_OF_WEEK);
+          TimeComponentExtractorComponent.DAY_OF_WEEK);
       break;
     case KW_TODATE:
       jj_consume_token(KW_TODATE);
-                   result = ToDate.getInstance();
+                   result = ToDate$.MODULE$;
       break;
     default:
       jj_la1[40] = jj_gen;

@@ -11,14 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+package com.google.visualization.datasource
+package query
+package scalarfunction
 
-package com.google.visualization.datasource.query.scalarfunction;
-
-import com.google.visualization.datasource.base.InvalidQueryException;
-import com.google.visualization.datasource.datatable.value.Value;
-import com.google.visualization.datasource.datatable.value.ValueType;
-
-import java.util.List;
+import base.InvalidQueryException
+import datatable.value.{Value, ValueType}
+import java.{util=>ju}
 
 /**
  * A scalar function.
@@ -29,14 +28,13 @@ import java.util.List;
  *
  * @author Liron L.
  */
-public interface ScalarFunction {
-
+abstract trait ScalarFunction {
   /**
    * Returns the function's name.
    *
    * @return The function's name.
    */
-  String getFunctionName();
+  def getFunctionName: String
 
   /**
    * Executes the scalar function on the given list of values, and returns the
@@ -46,7 +44,7 @@ public interface ScalarFunction {
    *
    * @return A Value which is the result of the executing the function.
    */
-  Value evaluate(List<Value> values);
+  def evaluate(values: ju.List[Value]): Value
 
   /**
    * Returns the return type of the function, given specific types for its parameters. Some
@@ -57,7 +55,7 @@ public interface ScalarFunction {
    *
    * @return The return type of the function.
    */
-  ValueType getReturnType(List<ValueType> types);
+  def getReturnType(types: ju.List[ValueType]): ValueType
 
   /**
    * Validates that the number and types of the function parameters are valid.
@@ -67,15 +65,17 @@ public interface ScalarFunction {
    *
    * @throws InvalidQueryException Thrown when the parameters are invalid.
    */
-  void validateParameters(List<ValueType> types) throws InvalidQueryException;
-  
+  @throws(classOf[InvalidQueryException])
+  def validateParameters(types: ju.List[ValueType]): Unit
+
   /**
    * Returns a string that when given to the query parser will yield a similar scalar function.
    * Takes as arguments the query strings of the arguments.
-   * 
+   *
    * @param argumentQueryStrings The query strings of the actual arguments.
-   * 
+   *
    * @return The query string.
    */
-  String toQueryString(List<String> argumentQueryStrings);
+  def toQueryString(argumentQueryStrings: ju.List[String]): String
 }
+
