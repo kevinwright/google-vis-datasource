@@ -15,57 +15,13 @@ package com.google.visualization.datasource
 package query
 package scalarfunction
 
-import base.InvalidQueryException
-import datatable.value.{TextValue, Value, ValueType}
-import java.util.List
-
-import collection.JavaConverters._
-
-object Upper extends Upper
-
 /**
  * A unary scalar function that changes text to upper case.
  *
  * @author Yaniv S.
  */
-class Upper extends ScalarFunction {
-
+object Upper extends StringScalarFunction {
   val functionName = "upper"
-  def getFunctionName = functionName
-
-  /**
-   * @param values A list that contains one text value.
-   *
-   * @return An uppercase version of the input text value.
-   */
-  override def evaluate(values: List[Value]): Value = {
-    return new TextValue((values.get(0).asInstanceOf[TextValue]).getValue.toUpperCase)
-  }
-
-  /**
-   * @return The return type of this function - TEXT.
-   */
-  override def getReturnType(types: List[ValueType]): ValueType = {
-    return ValueType.TEXT
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  override def validateParameters(types: List[ValueType]): Unit = {
-    if (types.size != 1) {
-      throw new InvalidQueryException(functionName + " requires 1 parmaeter")
-    }
-    if (types.get(0) != ValueType.TEXT) {
-      throw new InvalidQueryException(functionName + " takes a text parameter")
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  override def toQueryString(argumentsQueryStrings: List[String]): String = {
-    return functionName + "(" + argumentsQueryStrings.get(0) + ")"
-  }
+  def invoke(s: String) = s.toUpperCase
 }
 

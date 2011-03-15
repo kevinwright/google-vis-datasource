@@ -73,6 +73,7 @@ class DateDiff private () extends ScalarFunction {
       } else {
         (value.asInstanceOf[DateTimeValue]).getObjectToFormat
       }
+    
     calendar.getTime
   }
 

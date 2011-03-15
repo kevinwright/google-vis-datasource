@@ -21,7 +21,7 @@ package scalarfunction
 *
 * @author Liron L.
 */
-object Difference extends TwoArgNumericScalarFunction {
+object Difference extends BinaryOperatorScalarFunction {
   val functionName = "difference"
   val operatorName = "-"
   def invoke(a: Double, b: Double) = a - b

@@ -139,9 +139,9 @@ class BooleanFormat(trueString: String, falseString: String) extends UFormat {
    *
    * @exception ParseException If the string cannot be parsed.
    */
-  def parse(text: String): java.lang.Boolean = {
+  def parse(text: String): Boolean = {
     val parsePosition = new ParsePosition(0)
-    val result = parseObject(text, parsePosition)
+    val result = Boolean.unbox(parseObject(text, parsePosition))
     if (parsePosition.getIndex == 0) {
       throw new ParseException("Unparseable boolean: \"" + text + '"', parsePosition.getErrorIndex)
     }

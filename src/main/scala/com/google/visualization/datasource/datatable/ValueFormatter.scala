@@ -71,17 +71,17 @@ object ValueFormatter {
         case ValueType.DATE =>
           val uFormat = new SimpleDateFormat(pattern, locale)
           uFormat.asInstanceOf[SimpleDateFormat] setTimeZone (TimeZone getTimeZone "GMT")
-          uFormat.format(new DateValue(1995, 7, 3).getObjectToFormat)
+          uFormat.format(DateValue(1995, 7, 3).getObjectToFormat)
           uFormat
         case ValueType.TIMEOFDAY =>
           val uFormat = new SimpleDateFormat(pattern, locale)
           uFormat.asInstanceOf[SimpleDateFormat] setTimeZone (TimeZone getTimeZone "GMT")
-          uFormat.format(new TimeOfDayValue(2, 59, 12, 123).getObjectToFormat)
+          uFormat.format(TimeOfDayValue(2, 59, 12, 123).getObjectToFormat)
           uFormat
         case ValueType.DATETIME =>
           val uFormat = new SimpleDateFormat(pattern, locale)
           uFormat.asInstanceOf[SimpleDateFormat] setTimeZone (TimeZone getTimeZone "GMT")
-          uFormat.format(new DateTimeValue(1995, 7, 3, 2, 59, 12, 123).getObjectToFormat)
+          uFormat.format(DateTimeValue(1995, 7, 3, 2, 59, 12, 123).getObjectToFormat)
           uFormat
         case ValueType.NUMBER =>
           val symbols = new DecimalFormatSymbols(locale)

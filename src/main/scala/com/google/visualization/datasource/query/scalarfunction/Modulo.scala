@@ -15,72 +15,15 @@ package com.google.visualization.datasource
 package query
 package scalarfunction
 
-import base.InvalidQueryException
-import datatable.value.{NumberValue, Value, ValueType}
-import java.util.List
-
-import collection.JavaConverters._
-
-object Modulo extends Modulo
-
 /**
  * The binary scalar function modulo().
  * Returns the modulo between two number values.
  *
  * @author Roee E.
  */
-class Modulo extends ScalarFunction {
+object Modulo extends BinaryOperatorScalarFunction {
   def functionName = "modulo"
-  def getFunctionName = functionName
-
-  /**
-   * Executes a binary scalar function modulo() between the first and the second
-   * values in the list. Returns the modulo between the given values. All values
-   * are number values. The method does not validate the parameters,
-   * the user must check the parameters before calling this method.
-   *
-   * @param values A list of values on which the scalar function is performed.
-   *
-   *
-   * @return Value with the modulo between two given values, or number null value
-   *     if one of the values is null.
-   */
-  override def evaluate(values: List[Value]): Value = {
-    if (values.get(0).isNull || values.get(1).isNull) {
-      NumberValue.getNullValue
-    } else {
-      val modulo = (values.get(0).asInstanceOf[NumberValue]).getValue % (values.get(1).asInstanceOf[NumberValue]).getValue
-      new NumberValue(modulo)
-    }
-  }
-
-  /**
-   * Returns the return type of the function. In this case, NUMBER. The method
-   * does not validate the parameters, the user must check the parameters
-   * before calling this method.
-   *
-   * @param types A list of the types of the scalar function parameters.
-   *
-   * @return The type of the returned value: Number.
-   */
-  override def getReturnType(types: List[ValueType]) = ValueType.NUMBER
-
-  /**
-   * Validates that all function parameters are of type NUMBER, and that there
-   * are exactly 2 parameters. Throws a ScalarFunctionException otherwise.
-   *
-   * @param types A list with parameters types.
-   *
-   * @throws InvalidQueryException Thrown if the parameters are invalid.
-   */
-  override def validateParameters(types: List[ValueType]): Unit = {
-    if (types.size != 2)
-      throw new InvalidQueryException("The function " + functionName + " requires 2 parmaeters ")
-    if (types.asScala exists (_ != ValueType.NUMBER))
-      throw new InvalidQueryException("Can't perform the function " + functionName + " on values that are not numbers")
-  }
-
-  def toQueryString(argumentsQueryStrings: List[String]) =
-    "(" + argumentsQueryStrings.get(0) + " % " + argumentsQueryStrings.get(1) + ")"
+  val operatorName = "%"
+  def invoke(a: Double, b: Double) = a % b
 }
 

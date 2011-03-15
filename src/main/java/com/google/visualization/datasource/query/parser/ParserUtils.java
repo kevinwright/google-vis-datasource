@@ -80,7 +80,7 @@ import org.apache.commons.logging.LogFactory;
       int month = Integer.parseInt(split[1]);
       month--; // normalize 1-12 to 0-11.
       int day = Integer.parseInt(split[2]);
-      return new DateValue(year, month, day);
+      return DateValue.apply(year, month, day);
     } catch (NumberFormatException e) {
       log.error(String.format(dateMessage, s));
       throw new InvalidQueryException(String.format(dateMessage, s));
@@ -120,10 +120,10 @@ import org.apache.commons.logging.LogFactory;
         }
         second = Integer.parseInt(secondMilliSplit[0]);
         int milli = Integer.parseInt(secondMilliSplit[1]);
-        return new TimeOfDayValue(hour, minute, second, milli);
+        return TimeOfDayValue.apply(hour, minute, second, milli);
       } else {
         second = Integer.parseInt(split[2]);
-        return new TimeOfDayValue(hour, minute, second);
+        return TimeOfDayValue.apply(hour, minute, second);
       }
     } catch (NumberFormatException e) {
       log.error(String.format(timeOfDayMessage, s));
@@ -178,7 +178,7 @@ import org.apache.commons.logging.LogFactory;
       } else {
         second = Integer.parseInt(timeSplit[2]);
       }
-      return new DateTimeValue(year, month, day, hour, minute, second, milli);
+      return DateTimeValue.apply(year, month, day, hour, minute, second, milli);
     } catch (NumberFormatException e) {
       log.error(String.format(dateTimeMessage, s));
       throw new InvalidQueryException(String.format(dateTimeMessage, s));

@@ -15,14 +15,6 @@ package com.google.visualization.datasource
 package query
 package scalarfunction
 
-import base.InvalidQueryException
-import datatable.value.{NumberValue, Value, ValueType}
-import java.util.List
-
-import collection.JavaConverters._
-
-object Quotient extends Quotient
-
 /**
  * The binary scalar function quotient().
  * Returns the quotient of two values. Division by zero returns a null number
@@ -30,67 +22,9 @@ object Quotient extends Quotient
  *
  * @author Liron L.
  */
-class Quotient extends ScalarFunction {
-
+object Quotient extends BinaryOperatorScalarFunction {
   val functionName = "quotient"
-  def getFunctionName = functionName
-
-  /**
-   * Executes the scalar function quotient() on the given values. Returns the
-   * quotient of the given values. All values are number values. Division by
-   * zero returns a null number value.
-   * The method does not validate the parameters, the user must check the
-   * parameters before calling this method.
-   *
-   * @param values A list of values on which the scalar function is performed.
-   *
-   * @return Value with the quotient of all given values, or number null value
-   *     if one of the values is null or if one of the denominators is zero.
-   */
-  override def evaluate(values: List[Value]): Value = {
-    if (values.get(0).isNull || values.get(1).isNull || ((values.get(1).asInstanceOf[NumberValue]).getValue == 0)) {
-      NumberValue.getNullValue
-    } else {
-      var quotient: Double = (values.get(0).asInstanceOf[NumberValue]).getValue / (values.get(1).asInstanceOf[NumberValue]).getValue
-      new NumberValue(quotient)
-    }
-  }
-
-  /**
-   * Returns the return type of the function. In this case, NUMBER. The method
-   * does not validate the parameters, the user must check the parameters
-   * before calling this method.
-   *
-   * @param types A list of the types of the scalar function parameters.
-   *
-   * @return The type of the returned value: Number.
-   */
-  override def getReturnType(types: List[ValueType]): ValueType = {
-    return ValueType.NUMBER
-  }
-
-  /**
-   * Validates that all function parameters are of type NUMBER, and that there
-   * are exactly 2 parameters. Throws a ScalarFunctionException otherwise.
-   *
-   * @param types A list with parameters types.
-   *
-   * @throws InvalidQueryException Thrown if the parameters are invalid.
-   */
-  override def validateParameters(types: List[ValueType]): Unit = {
-    if (types.size != 2) {
-      throw new InvalidQueryException("The function " + functionName + " requires 2 parmaeters ")
-    }
-    if (types.asScala exists (_ != ValueType.NUMBER)) {
-      throw new InvalidQueryException("Can't perform the function " + functionName + " on values that are not numbers")
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  override def toQueryString(argumentsQueryStrings: List[String]): String = {
-    return "(" + argumentsQueryStrings.get(0) + " / " + argumentsQueryStrings.get(1) + ")"
-  }
+  val operatorName = "/"
+  def invoke(a: Double, b: Double) = a / b
 }
 

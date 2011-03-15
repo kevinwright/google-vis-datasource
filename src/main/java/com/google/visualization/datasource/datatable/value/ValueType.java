@@ -107,8 +107,8 @@ public enum ValueType {
     } else if ((this == NUMBER) && (value instanceof Number)) {
         ret = new NumberValue(((Number) value).doubleValue());
     } else if ((this == BOOLEAN) && (value instanceof Boolean)) {
-        ret = ((Boolean) value).booleanValue() ? BooleanValue.TRUE
-                : BooleanValue.FALSE;
+        ret = ((Boolean) value).booleanValue() ? BooleanValue.TRUE()
+                : BooleanValue.FALSE();
     } else if ((this == DATE) && (value instanceof GregorianCalendar)) {
         ret = new DateValue((GregorianCalendar) value);
     } else if ((this == DATETIME) && (value instanceof GregorianCalendar)) {

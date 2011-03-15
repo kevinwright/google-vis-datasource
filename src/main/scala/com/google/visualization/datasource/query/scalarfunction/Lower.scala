@@ -15,51 +15,14 @@ package com.google.visualization.datasource
 package query
 package scalarfunction
 
-import base.InvalidQueryException
-import datatable.value.{TextValue, Value, ValueType}
-import java.util.List
-
-object Lower extends Lower
-
 /**
  * A unary scalar function that changes text to lower case.
  *
  * @author Yaniv S.
  */
-class Lower extends ScalarFunction {
+object Lower extends StringScalarFunction {
   val functionName = "lower"
-  def getFunctionName = functionName
-
-  /**
-   * @param values A list that contains one text value.
-   *
-   * @return A lower-case version of the input text value.
-   */
-  override def evaluate(values: List[Value]) =
-    new TextValue((values.get(0).asInstanceOf[TextValue]).getValue.toLowerCase)
-
-  /**
-   * @return The return type of this function - TEXT.
-   */
-  override def getReturnType(types: List[ValueType]) = ValueType.TEXT
-
-  /**
-   * {@inheritDoc}
-   */
-  override def validateParameters(types: List[ValueType]): Unit = {
-    if (types.size != 1) {
-      throw new InvalidQueryException(functionName + " requires 1 parmaeter")
-    }
-    if (types.get(0) != ValueType.TEXT) {
-      throw new InvalidQueryException(functionName + " takes a text parameter")
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  override def toQueryString(argumentsQueryStrings: List[String]) =
-    functionName + "(" + argumentsQueryStrings.get(0) + ")"
+  def invoke(s: String) = s.toLowerCase
 }
 
 
