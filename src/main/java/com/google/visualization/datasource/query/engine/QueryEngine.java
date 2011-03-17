@@ -121,7 +121,7 @@ public final class QueryEngine {
     // A map of column lookups by their list of pivot values. This is utilized in
     // the grouping and pivoting queries.
     TreeMap<List<Value>, ColumnLookup> columnLookups =
-        new TreeMap<List<Value>, ColumnLookup>(GroupingComparators.VALUE_LIST_COMPARATOR);
+        new TreeMap<List<Value>, ColumnLookup>(GroupingComparators.VALUE_LIST_COMPARATOR());
     try {
       table = performFilter(table, query);
       table = performGroupingAndPivoting(table, query, columnIndices, columnLookups);
@@ -488,14 +488,14 @@ public final class QueryEngine {
     // These variables will hold the "titles" of the rows and columns.
     // They are TreeSets because their order matters.
     SortedSet<RowTitle> rowTitles =
-        Sets.newTreeSet(GroupingComparators.ROW_TITLE_COMPARATOR);
+        Sets.newTreeSet(GroupingComparators.ROW_TITLE_COMPARATOR());
     SortedSet<ColumnTitle> columnTitles = Sets.newTreeSet(
         GroupingComparators.getColumnTitleDynamicComparator(columnAggregations));
 
     // A tree set containing all pivot value lists (the set is for the
     // uniqueness and the tree for the order).
     TreeSet<List<Value>> pivotValuesSet =
-        Sets.newTreeSet(GroupingComparators.VALUE_LIST_COMPARATOR);
+        Sets.newTreeSet(GroupingComparators.VALUE_LIST_COMPARATOR());
     // This MetaTable holds all the data in the table, this data is then
     // dumped into the real table.
     MetaTable metaTable = new MetaTable();
@@ -567,12 +567,12 @@ public final class QueryEngine {
     }
 
     for (ColumnTitle title : columnTitles) {
-      columnIndices.put(title.aggregation, columnIndex);
+      columnIndices.put(title.getAggregation(), columnIndex);
       List<Value> values = title.getValues();
       if (!columnLookups.containsKey(values)) {
         columnLookups.put(values, new GenericColumnLookup());
       }
-      ((GenericColumnLookup) columnLookups.get(values)).put(title.aggregation, columnIndex);
+      ((GenericColumnLookup) columnLookups.get(values)).put(title.getAggregation(), columnIndex);
       columnIndex++;
     }
 
@@ -580,7 +580,7 @@ public final class QueryEngine {
     for (RowTitle rowTitle : rowTitles) {
       TableRow curRow = new TableRow();
       // Add the group-by columns cells.
-      for (Value v : rowTitle.values) {
+      for (Value v : rowTitle.values()) {
         curRow.addCell(new TableCell(v));
       }
       Map<ColumnTitle, TableCell> rowData = metaTable.getRow(rowTitle);
@@ -589,7 +589,7 @@ public final class QueryEngine {
       for (ColumnTitle colTitle : columnTitles) {
         TableCell cell = rowData.get(colTitle);
         curRow.addCell((cell != null) ? cell : new TableCell(
-            Value.getNullValueFromValueType(colDescs.get(i + rowTitle.values.size()).getType())));
+            Value.getNullValueFromValueType(colDescs.get(i + rowTitle.values().size()).getType())));
         i++;
       }
       // Add the scalar function columns cells.
