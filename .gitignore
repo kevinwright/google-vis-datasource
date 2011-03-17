@@ -11,7 +11,8 @@ target/
 lib/
 lib_managed/
 src_managed/
-build/
+build/class
+build/generated-sources
 project/boot/
 project/build/target/
 project/plugins/target/
