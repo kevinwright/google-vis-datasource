@@ -5,4 +5,5 @@ class Plugins(info: ProjectInfo) extends PluginDefinition(info) {
   val thuntRepo = "t_repo" at "http://tristanhunt.com:8081/content/groups/public/"
   val sbtIdea = "com.github.mpeltonen" % "sbt-idea-plugin" % "0.2.0"
   val posterous = "net.databinder" % "posterous-sbt" % "0.1.6"
+  val eclipse = "de.element34" % "sbt-eclipsify" % "0.7.0"
 }

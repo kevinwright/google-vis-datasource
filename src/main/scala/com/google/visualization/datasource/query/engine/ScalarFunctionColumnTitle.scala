@@ -20,6 +20,8 @@ import datatable.value.{Value, ValueType}
 import org.apache.commons.lang.text.StrBuilder
 import java.{util => ju}
 
+import collection.JavaConverters._
+
 object ScalarFunctionColumnTitle {
   /**
    * Returns the label of the column description.
@@ -37,10 +39,10 @@ object ScalarFunctionColumnTitle {
         case aggColumn: AggregationColumn =>
           aggColumn.getAggregationType.getCode +
           " " +
-          originalTable.getColumnDescription(aggColumn.getAggregatedColumn.getId).getLabel)
+          originalTable.getColumnDescription(aggColumn.getAggregatedColumn.getId).getLabel
         case scalarFunctionColumn: ScalarFunctionColumn =>
           val columns = scalarFunctionColumn.getColumns
-          val labels = columns map { getColumnDescriptionLabel(originalTable, _) }
+          val labels = columns.asScala map { getColumnDescriptionLabel(originalTable, _) }
           labels.mkString("(", "", ")")
         case _ => error("unexpected")
       }
@@ -68,28 +70,11 @@ object ScalarFunctionColumnTitle {
  *
  * @author Liron L.
  */
-class ScalarFunctionColumnTitle {
-  /**
-   * Creates a new instance of this class, with the given values and
-   * ScalarFunctionColumn.
-   *
-   * @param values The list of values.
-   * @param column The ScalarFunctionColumn.
-   */
-  def this(values: List[Value], column: ScalarFunctionColumn) {
-    this ()
-    this.values = values
-    this.scalarFunctionColumn = column
-  }
+class ScalarFunctionColumnTitle(jvalues: ju.List[Value], val column: ScalarFunctionColumn) {
+  import ScalarFunctionColumnTitle._
 
-  /**
-   * Returns the values in this ColumnTitle.
-   *
-   * @return The values in this ColumnTitle.
-   */
-  def getValues: List[Value] = {
-    return values
-  }
+  val values = jvalues.asScala.toList
+  def getValues = values.asJava
 
   /**
    * Creates a ColumnDescription for this column.
@@ -99,13 +84,12 @@ class ScalarFunctionColumnTitle {
    *
    * @return The ColumnDescription for this column.
    */
-  def createColumnDescription(originalTable: DataTable): ColumnDescription = {
-    var columnId: String = createIdPivotPrefix + scalarFunctionColumn.getId
-    var `type` : ValueType = scalarFunctionColumn.getValueType(originalTable)
-    var label: String = createLabelPivotPart + " " + getColumnDescriptionLabel(originalTable, scalarFunctionColumn)
-    var result: ColumnDescription = new ColumnDescription(columnId, `type`, label)
-    return result
-  }
+  def createColumnDescription(originalTable: DataTable) =
+    new ColumnDescription(
+      createIdPivotPrefix + column.getId,
+      column.getValueType(originalTable),
+      createLabelPivotPart + " " + getColumnDescriptionLabel(originalTable, column)
+    )
 
   /**
    * Creates a prefix for a pivoted column id, containing all the values of the
@@ -114,10 +98,8 @@ class ScalarFunctionColumnTitle {
    * @return A prefix for the pivoted column id.
    */
   private def createIdPivotPrefix: String = {
-    if (!isPivot) {
-      return ""
-    }
-    return new StrBuilder().appendWithSeparators(values, PIVOT_COLUMNS_SEPARATOR).append(PIVOT_SCALAR_FUNCTION_SEPARATOR).toString
+    if (!isPivot) ""
+    else values.mkString("", PIVOT_COLUMNS_SEPARATOR, PIVOT_SCALAR_FUNCTION_SEPARATOR)
   }
 
   /**
@@ -127,48 +109,29 @@ class ScalarFunctionColumnTitle {
    * @return A prefix for the pivoted column label.
    */
   private def createLabelPivotPart: String = {
-    if (!isPivot) {
-      return ""
-    }
-    return new StrBuilder().appendWithSeparators(values, PIVOT_COLUMNS_SEPARATOR).toString
+    if (!isPivot) ""
+    else values.mkString(PIVOT_COLUMNS_SEPARATOR)
   }
 
-  /**
-   * Returns true if pivoting was used.
-   *
-   * @return True if pivoting was used.
-   */
-  private def isPivot: Boolean = {
-    return (!values.isEmpty)
-  }
+  private def isPivot: Boolean = !values.isEmpty
 
-  override def equals(o: AnyRef): Boolean = {
+  override def equals(o: Any): Boolean = {
     if (o.isInstanceOf[ScalarFunctionColumnTitle]) {
-      var other: ScalarFunctionColumnTitle = o.asInstanceOf[ScalarFunctionColumnTitle]
-      return (values.equals(other.values) && scalarFunctionColumn.equals(other.scalarFunctionColumn))
-    }
-    return false
+      val other = o.asInstanceOf[ScalarFunctionColumnTitle]
+      (values == other.values) && (column == other.column)
+    } else false
   }
 
   override def hashCode: Int = {
     var result: Int = 31
-    if (scalarFunctionColumn != null) {
-      result += scalarFunctionColumn.hashCode
+    if (column != null) {
+      result += column.hashCode
     }
     result *= 31
     if (values != null) {
       result += values.hashCode
     }
-    return result
+    result
   }
-
-  /**
-   * The list of values from the pivot-by columns.
-   */
-  private var values: List[Value] = null
-  /**
-   * The scalar function column denoting this column.
-   */
-  var scalarFunctionColumn: ScalarFunctionColumn = null
 }
 

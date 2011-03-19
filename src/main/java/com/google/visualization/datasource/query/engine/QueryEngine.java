@@ -594,7 +594,7 @@ public final class QueryEngine {
       }
       // Add the scalar function columns cells.
       for (ScalarFunctionColumnTitle columnTitle : scalarFunctionColumnTitles) {
-        curRow.addCell(new TableCell(columnTitle.scalarFunctionColumn.
+        curRow.addCell(new TableCell(columnTitle.column().
             getValue(columnLookups.get(columnTitle.getValues()), curRow)));
       }
       result.addRow(curRow);
@@ -607,14 +607,14 @@ public final class QueryEngine {
     // See the logic of the getValue() method in ScalarFunctionColumn.
     for (ScalarFunctionColumnTitle scalarFunctionColumnTitle
         : scalarFunctionColumnTitles) {
-      columnIndices.put(scalarFunctionColumnTitle.scalarFunctionColumn,
+      columnIndices.put(scalarFunctionColumnTitle.column(),
           columnIndex);
       List<Value> values = scalarFunctionColumnTitle.getValues();
       if (!columnLookups.containsKey(values)) {
         columnLookups.put(values, new GenericColumnLookup());
       }
       ((GenericColumnLookup) columnLookups.get(values)).put(
-          scalarFunctionColumnTitle.scalarFunctionColumn, columnIndex);
+          scalarFunctionColumnTitle.column(), columnIndex);
       columnIndex++;
     }
 
