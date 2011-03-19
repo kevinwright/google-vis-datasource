@@ -16,6 +16,7 @@ build/generated-sources
 project/boot/
 project/build/target/
 project/plugins/target/
+project/plugins/project/
 project/plugins/lib_managed/
 project/plugins/src_managed/
 .cvsignore
@@ -23,3 +24,7 @@ project/plugins/src_managed/
 *.iml
 *.iws
 *.ipr
+.project
+.classpath
+.scala_dependencies
+
