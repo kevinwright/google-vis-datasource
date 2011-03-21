@@ -15,10 +15,11 @@ package com.google.visualization.datasource
 package query
 package engine
 
-import com.google.common.collect.Ordering
+import com.google.common.collect.{Ordering => GoogOrdering}
 import datatable.value.Value
 import query.AggregationColumn
-import java.util.{Comparator, List}
+import java.{util => ju}
+import ju.Comparator
 
 import collection.JavaConverters._
 
@@ -44,8 +45,8 @@ object GroupingComparators {
    *
    * @return The comparator.
    */
-  def getColumnTitleDynamicComparator(columnAggregations: List[AggregationColumn]): Comparator[ColumnTitle] =
-    new GroupingComparators.ColumnTitleDynamicComparator(columnAggregations)
+  def getColumnTitleDynamicComparator(columnAggregations: ju.List[AggregationColumn]): Ordering[ColumnTitle] =
+    new ColumnTitleDynamicComparator(columnAggregations)
 
   /**
    * Compares a list of values "lexicographically", i.e., if l1 = (x1...xn) and
@@ -54,24 +55,28 @@ object GroupingComparators {
    * both lists are of the same size. If the lists are not of the same size and no
    * such k exists, then the longer list is considered to be greater.
    */
-  val VALUE_LIST_COMPARATOR: Comparator[List[Value]] = new Comparator[List[Value]] {
-    def compare(l1: List[Value], l2: List[Value]): Int = {
-      val i = (l1.asScala zip l2.asScala) indexWhere {
-        case (a,b) => (a compareTo b) != 0
-      }
-
-      if (i < l1.size) 1 else if (i < l2.size) -1 else 0
+  val VALUE_LIST_COMPARATOR = new Ordering[ju.List[Value]] {
+    def compare(a: ju.List[Value], b: ju.List[Value]) =
+      ValueSeqOrdering.compare(a.asScala, b.asScala)
+  }
+  
+  object ValueSeqOrdering extends Ordering[Seq[Value]] {
+    def compare(a: Seq[Value], b: Seq[Value]): Int = {
+      val i = (a zip b) indexWhere { case (a,b) => (a compareTo b) != 0 }
+      if (i < a.size) 1 else if (i < b.size) -1 else 0
+    }
+  }
+  
+  object RowTitleOrdering extends Ordering[RowTitle] {
+    def compare(col1: RowTitle, col2: RowTitle): Int = {
+      ValueSeqOrdering.compare(col1.values, col2.values)
     }
   }
   /**
    * Compares RowTitles by comparing their list of values "lexicographically",
    * i.e. by using VALUE_LIST_COMPARATOR on them.
    */
-  final val ROW_TITLE_COMPARATOR: Comparator[RowTitle] = new Comparator[RowTitle] {
-    def compare(col1: RowTitle, col2: RowTitle): Int = {
-      VALUE_LIST_COMPARATOR.compare(col1.values, col2.values)
-    }
-  }
+  val ROW_TITLE_COMPARATOR = RowTitleOrdering
 
   /**
    * A comparator that compares {@link ColumnTitle}s and is parameterized by a
@@ -87,9 +92,8 @@ object GroupingComparators {
    * ColumnAggregation isn't in the given list, then it shouldn't be
    * compared using this comparator and a runtime exception will be thrown.
    */
-  private class ColumnTitleDynamicComparator(aggregations: List[AggregationColumn]) extends Comparator[ColumnTitle] {
-    val aggregationsComparator: Comparator[AggregationColumn] =
-      Ordering explicit aggregations
+  private class ColumnTitleDynamicComparator(aggregations: ju.List[AggregationColumn]) extends Ordering[ColumnTitle] {
+    val aggregationsComparator = GoogOrdering explicit aggregations
 
     /**
      * Compares the ColumnTitles according to the logic described in the

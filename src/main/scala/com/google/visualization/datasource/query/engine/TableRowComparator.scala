@@ -31,7 +31,7 @@ import collection.JavaConverters._
  * @author Yoah B.D.
  */
 class TableRowComparator(sort: QuerySort, locale: ULocale, columnLookup: ColumnLookup)
-extends Comparator[TableRow] {
+extends Ordering[TableRow] {
 
   private val columns = sort.getSortColumns.asScala.toArray
 

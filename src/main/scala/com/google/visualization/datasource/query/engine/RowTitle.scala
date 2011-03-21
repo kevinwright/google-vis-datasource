@@ -16,7 +16,6 @@ package query
 package engine
 
 import datatable.value.Value
-import java.util.List
 
 /**
  * A "title" (identification) of a row in a pivoted and/or grouped table.
@@ -24,7 +23,7 @@ import java.util.List
  *
  * @author Yonatan B.Y.
  */
-case class RowTitle(values: List[Value]) {
+case class RowTitle(values: Seq[Value]) {
   def this() = this(null)
 }
 

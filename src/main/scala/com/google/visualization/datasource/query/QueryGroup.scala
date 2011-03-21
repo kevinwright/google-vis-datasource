@@ -15,7 +15,6 @@ package com.google.visualization.datasource.query
 
 import com.google.common.collect.{ImmutableList, Lists}
 import java.{util => ju, lang => jl}
-import ju.List
 import collection.JavaConverters._
 
 /**
@@ -26,67 +25,24 @@ import collection.JavaConverters._
  * @author Yonatan B.Y.
  * @author Liron L.
  */
-case class QueryGroup(columns: List[AbstractColumn]) {
-  def this() = this(Lists.newArrayList[AbstractColumn])
+case class QueryGroup(var columns: Seq[AbstractColumn]) {
+  def this() = this(Seq.empty[AbstractColumn])
 
-  def addColumn(column: AbstractColumn): Unit = columns add column
+  def getColumns: ju.List[AbstractColumn] = columns.toBuffer.asJava
+  
+  def addColumn(column: AbstractColumn): Unit = columns :+= column
 
-  def getColumnIds: List[String] = {
-    val columnIds: List[String] = Lists.newArrayList[String]
-    for (col <- columns.asScala) {
-      columnIds add col.getId
-    }
-    ImmutableList.copyOf(columnIds: jl.Iterable[String])
-  }
+  def columnIds = columns map { _.getId }
+  def getColumnIds: ju.List[String] = columnIds.toBuffer.asJava
 
-  /**
-   * Returns a list of all simple columns' IDs in this group.
-   *
-   * @return A list of all simple columns' IDs in this group.
-   */
-  def getSimpleColumnIds: List[String] = {
-    val columnIds: List[String] = Lists.newArrayList[String]
-    for (col <- columns.asScala) {
-      columnIds addAll col.getAllSimpleColumnIds
-    }
-    columnIds
-  }
+  def simpleColumnIds = columns flatMap {_.getAllSimpleColumnIds.asScala}
+  def getSimpleColumnIds: ju.List[String] = simpleColumnIds.toBuffer.asJava 
 
-  /**
-   * Returns the list of group-by columns. This list is immutable.
-   *
-   * @return The list of group-by columns. This list is immutable.
-   */
-  def getColumns: List[AbstractColumn] =
-    ImmutableList.copyOf(columns: jl.Iterable[AbstractColumn])
+  def simpleColumns = columns flatMap {_.getAllSimpleColumns.asScala }
+  def getSimpleColumns: ju.List[SimpleColumn] = simpleColumns.toBuffer.asJava
 
-  /**
-   * Returns the list of simple columns included in the group-by section.
-   *
-   * @return The list of simple columns included in the group-by section.
-   */
-  def getSimpleColumns: List[SimpleColumn] = {
-    val simpleColumns: List[SimpleColumn] = Lists.newArrayList[SimpleColumn]
-    for (col <- columns.asScala) {
-      simpleColumns addAll col.getAllSimpleColumns
-    }
-    simpleColumns
-  }
-
-  /**
-   * Returns the list of scalar function columns included in the group-by
-   * section.
-   *
-   * @return The list of scalar function columns included in the group-by
-   *     section
-   */
-  def getScalarFunctionColumns: List[ScalarFunctionColumn] = {
-    val scalarFunctionColumns: List[ScalarFunctionColumn] = Lists.newArrayList[ScalarFunctionColumn]
-    for (col <- columns.asScala) {
-      scalarFunctionColumns addAll col.getAllScalarFunctionColumns
-    }
-    scalarFunctionColumns
-  }
+  def scalarFunctionColumns = columns flatMap { _.getAllScalarFunctionColumns.asScala }   
+  def getScalarFunctionColumns: ju.List[ScalarFunctionColumn] = scalarFunctionColumns.toBuffer.asJava
 
   /**
    * Returns a string that when fed to the query parser would produce an equal QueryGroup.
@@ -94,7 +50,7 @@ case class QueryGroup(columns: List[AbstractColumn]) {
    *
    * @return The query string.
    */
-  def toQueryString = Query columnListToQueryString columns
+  def toQueryString = Query columnListToQueryString getColumns
 
 
 }

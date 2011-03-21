@@ -16,7 +16,6 @@ package query
 
 import com.google.common.collect.{ImmutableList, Lists}
 import java.{util => ju, lang => jl}
-import ju.List
 
 import collection.JavaConverters._
 
@@ -27,78 +26,25 @@ import collection.JavaConverters._
  * @author Yoav G.
  * @author Yonatan B.Y.
  */
-case class QueryPivot(columns: List[AbstractColumn]) {
+case class QueryPivot(var columns: Seq[AbstractColumn]) {
 
-  def this() = this(Lists.newArrayList[AbstractColumn])
+  def this() = this(Seq.empty[AbstractColumn])
 
-  /**
-   * Adds a column to pivot.
-   *
-   * @param column The column to add.
-   */
-  def addColumn(column: AbstractColumn): Unit =
-    columns add column
-
-  /**
-   * Returns the list of pivot column IDs. This list is immutable.
-   *
-   * @return The list of pivot column IDs. This list is immutable.
-   */
-  def getColumnIds: List[String] = {
-    val columnIds = Lists.newArrayList[String]
-    for (col <- columns.asScala) {
-      columnIds add col.getId
-    }
-    ImmutableList.copyOf(columnIds: jl.Iterable[String])
-  }
-
-  /**
-   * Returns a list of all simple columns' IDs in this pivot.
-   *
-   * @return A list of all simple columns' IDs in this pivot.
-   */
-  def getSimpleColumnIds: List[String] = {
-    val columnIds = Lists.newArrayList[String]
-    for (col <- columns.asScala) {
-      columnIds addAll col.getAllSimpleColumnIds
-    }
-    columnIds
-  }
-
-  /**
-   * Returns the list of pivot columns. This list is immutable.
-   *
-   * @return The list of pivot columns. This list is immutable.
-   */
-  def getColumns: List[AbstractColumn] =
-    ImmutableList.copyOf(columns: jl.Iterable[AbstractColumn])
+  def getColumns: ju.List[AbstractColumn] = columns.toBuffer.asJava
   
+  def addColumn(column: AbstractColumn): Unit = columns :+= column
 
-  /**
-   * Returns the list of pivot simple columns.
-   *
-   * @return The list of pivot simple columns.
-   */
-  def getSimpleColumns: List[SimpleColumn] = {
-    val simpleColumns = Lists.newArrayList[SimpleColumn]
-    for (col <- columns.asScala) {
-      simpleColumns addAll col.getAllSimpleColumns
-    }
-    simpleColumns
-  }
+  def columnIds = columns map { _.getId }
+  def getColumnIds: ju.List[String] = columnIds.toBuffer.asJava
 
-  /**
-   * Returns the list of pivot scalar function columns.
-   *
-   * @return The list of pivot scalar function columns.
-   */
-  def getScalarFunctionColumns: List[ScalarFunctionColumn] = {
-    var scalarFunctionColumns = Lists.newArrayList[ScalarFunctionColumn]
-    for (col <- columns.asScala) {
-      scalarFunctionColumns addAll col.getAllScalarFunctionColumns
-    }
-    scalarFunctionColumns
-  }
+  def simpleColumnIds = columns flatMap {_.getAllSimpleColumnIds.asScala}
+  def getSimpleColumnIds: ju.List[String] = simpleColumnIds.toBuffer.asJava 
+
+  def simpleColumns = columns flatMap {_.getAllSimpleColumns.asScala }
+  def getSimpleColumns: ju.List[SimpleColumn] = simpleColumns.toBuffer.asJava
+
+  def scalarFunctionColumns = columns flatMap { _.getAllScalarFunctionColumns.asScala }   
+  def getScalarFunctionColumns: ju.List[ScalarFunctionColumn] = scalarFunctionColumns.toBuffer.asJava
 
   /**
    * Returns a string that when fed to the query parser would produce an equal QueryPivot.
@@ -106,6 +52,6 @@ case class QueryPivot(columns: List[AbstractColumn]) {
    *
    * @return The query string.
    */
-  def toQueryString = Query columnListToQueryString columns
+  def toQueryString = Query columnListToQueryString getColumns
 }
 
